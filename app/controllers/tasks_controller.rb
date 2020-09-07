@@ -1,19 +1,16 @@
 class TasksController < ApplicationController
-  
-  before_action :set_task, only: [:show, :edit, :update, :destroy]
-  before_action :correct_user, only: [:destroy]
+  before_action :require_user_logged_in
+  before_action :correct_user, only: [:show, :edit, :update, :destroy]
   
   def index
-    if logged_in?
-      @tasks = current_user.tasks.order(id: :desc)
-    end
+    @tasks = current_user.tasks.order(id: :desc)
   end
   
   def show
   end
 
   def new
-    @task = Task.new
+    @task = current_user.tasks.build
   end
 
   def create
@@ -48,10 +45,6 @@ class TasksController < ApplicationController
   end
   
   private
-  
-  def set_task
-    @task = Task.find(params[:id])
-  end
   
   # Strong Parameter
   def task_params
